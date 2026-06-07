@@ -16,15 +16,10 @@ export function setStoredToken(token) {
   }
 }
 
-// Dev + empty VITE_API_URL → same-origin /api (Vite proxy). Prod + empty → localhost API for local previews.
+// Empty VITE_API_URL → same-origin (correct for prod where frontend+backend share one domain).
 const _env = import.meta.env.VITE_API_URL;
 const _trim = _env != null ? String(_env).trim() : "";
-const baseURL =
-  _trim !== ""
-    ? _trim
-    : import.meta.env.DEV
-      ? ""
-      : "http://localhost:8000";
+const baseURL = _trim !== "" ? _trim : "";
 
 export const api = axios.create({
   baseURL,
