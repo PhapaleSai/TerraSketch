@@ -176,7 +176,12 @@ app.include_router(review_routes.router, prefix="/api", tags=["review"])
 
 
 @app.get("/", tags=["meta"])
-def root() -> dict:
+def root():
+    # In production the React build is in app/static — serve index.html at root
+    _sd = Path(__file__).parent / "static"
+    if _sd.is_dir():
+        from fastapi.responses import FileResponse
+        return FileResponse(str(_sd / "index.html"))
     out = {
         "name": settings.APP_NAME,
         "version": __version__,
