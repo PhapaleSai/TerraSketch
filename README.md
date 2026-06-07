@@ -8,11 +8,31 @@ app_port: 7860
 pinned: false
 ---
 
+<div align="center">
+
 # TerraSketch
 
-> **Architecture diagram → Terraform code.** Upload a cloud architecture
-> diagram (or describe it in text), pick AWS / Azure / GCP, and get
-> production-ready Terraform — instantly.
+**Architecture diagram → Production Terraform code**
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-terrasketch.onrender.com-6366f1?style=for-the-badge)](https://terrasketch.onrender.com)
+[![Version](https://img.shields.io/badge/version-1.6.0-blue?style=for-the-badge)](#whats-new)
+[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
+
+Upload a cloud architecture diagram (or describe it in text), pick **AWS / Azure / GCP**, and get production-ready Terraform in seconds.
+
+</div>
+
+---
+
+## What it does
+
+| Step | What happens |
+|---|---|
+| 1. Upload or describe | PNG/JPG diagram or plain-text description |
+| 2. Pick cloud + scale | AWS / Azure / GCP · Small / Mid / High scale tier |
+| 3. Generate | GPT-4o produces 4 Terraform files with `# WHY` comments |
+| 4. Review & improve | Upload existing `.tf` files → get audited + improved versions |
+| 5. Export | Download zip, copy code, or export Mermaid diagram |
 
 This repo is a monorepo with a **FastAPI backend** and a **React + Vite frontend**.
 The backend supports two generation pipelines:
@@ -212,27 +232,36 @@ DATABASE_URL=... python scripts/mine_low_rated.py
 DATABASE_URL=... ANTHROPIC_API_KEY=... python scripts/feedback_retraining.py
 ```
 
+## What's New
+
+### v1.6.0 — Terraform File Review
+Upload existing `.tf` files or a `.zip` → 5-category audit (Security, Cost, Reliability, Best Practices, Compliance) → improved files with Original ↔ Improved toggle.
+
+### v1.5.0 — Dashboard Results + Scale Tiers
+Grafana-style KPI cards on the Result page. Scale-aware generation: **Small** (0–100 users), **Mid** (100–1K), **High** (1K+) with DR strategies and `# WHY` comments.
+
+### v1.4.0 — Architecture Library
+12 verified production-grade architecture patterns from AWS, Azure, GCP official sources.
+
+---
+
 ## Deploying for free
 
-| Layer | Host | Free tier |
+This app is deployed as a **single Docker container** — frontend is built into the backend, one URL serves everything.
+
+| Layer | Host | Notes |
 |---|---|---|
-| Frontend | **Vercel** | Unlimited personal projects, free SSL |
-| Backend | **Render** Web Service | Spins down after 15 min, wakes on request |
-| Database | **Render** PostgreSQL | 1 GB storage, 90-day retention |
-| AI | Anthropic / Azure OpenAI / Gemini | Pay-per-use |
+| **App (frontend + backend)** | **Render** | Free tier, sleeps after 15 min inactivity |
+| **Database** | **Supabase** | Free PostgreSQL, always on |
+| **AI** | Azure OpenAI GPT-4o | Pay-per-use |
 
-### Backend (Render)
+### Deploy to Render (recommended)
 
-1. Push this repo to GitHub.
-2. On Render, "New +" → "Blueprint" → point at this repo. `render.yaml` provisions a web service + Postgres DB.
-3. Set `LLM_PROVIDER` and the provider key(s) in the web service environment.
-4. From the Render shell: `alembic upgrade head`.
-
-### Frontend (Vercel)
-
-1. Import the repo in Vercel, set project root to `frontend/`.
-2. Set `VITE_API_URL=https://<your-backend>.onrender.com`.
-3. Push to `main` — Vercel auto-deploys.
+1. Fork this repo to your GitHub account
+2. On [render.com](https://render.com) → **New + → Web Service** → connect your repo
+3. Set **Runtime: Docker**, **Port: 7860**, **Instance: Free**
+4. Add environment variables (see `.env.example`)
+5. Click **Deploy** — auto-deploys on every push to `main`
 
 ## Tech stack
 
